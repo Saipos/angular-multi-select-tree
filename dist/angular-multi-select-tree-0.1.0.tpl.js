@@ -2,58 +2,103 @@ angular.module('multi-select-tree').run(['$templateCache', function($templateCac
   'use strict';
 
   $templateCache.put('src/multi-select-tree.tpl.html',
-    "<div class=\"tree-control\">\n" +
+    "<div class=\"multi-select-tree\" ng-class=\"{'multi-select-tree--input-focused': isInputFocused, 'multi-select-tree--popup-opened': showTree, 'multi-select-tree--multiple': multiSelect, 'multi-select-tree--single': !multiSelect, 'multi-select-tree--has-selected-items': selectedItems && selectedItems.length > 0, 'multi-select-tree--disabled': disabled}\">\r" +
     "\n" +
-    "    <div class=\"tree-input\" ng-click=\"onControlClicked($event)\">\n" +
-    "    <span ng-if=\"selectedItems.length == 0\" class=\"selected-items\">\n" +
-    "      <span ng-bind=\"defaultLabel\"></span>\n" +
-    "    </span>\n" +
-    "    <span ng-if=\"selectedItems.length > 0\" class=\"selected-items\">\n" +
-    "      <span ng-repeat=\"selectedItem in selectedItems\" class=\"selected-item\">{{selectedItem.name}} <span class=\"selected-item-close\"\n" +
-    "                                                                                  ng-click=\"deselectItem(selectedItem, $event)\"></span></span>\n" +
-    "        <span class=\"caret\"></span>\n" +
-    "    </span>\n" +
-    "        <!-- <input type=\"text\" class=\"blend-in\" /> -->\n" +
-    "    </div>\n" +
-    "    <div class=\"tree-view\" ng-show=\"showTree\">\n" +
-    "        <div class=\"helper-container\">\n" +
-    "             <div class=\"line\" data-ng-if=\"switchView\">\n" +
-    "                 <button type=\"button\" ng-click=\"switchCurrentView($event);\" class=\"helper-button\">{{switchViewLabel}}</button>\n" +
-    "             </div>\n" +
-    "            <div class=\"line\">\n" +
-    "                <input placeholder=\"Search...\" type=\"text\" ng-model=\"filterKeyword\" ng-click=\"onFilterClicked($event)\"\n" +
-    "                       class=\"input-filter\">\n" +
-    "                <span class=\"clear-button\" ng-click=\"clearFilter($event)\"><span class=\"item-close\"></span></span>\n" +
-    "            </div>\n" +
-    "        </div>\n" +
-    "        <ul class=\"tree-container\">\n" +
-    "            <tree-item class=\"top-level\" ng-repeat=\"item in inputModel\" item=\"item\" ng-show=\"!item.isFiltered\"\n" +
-    "                       use-callback=\"useCallback\" can-select-item=\"canSelectItem\"\n" +
-    "                       multi-select=\"multiSelect\" item-selected=\"itemSelected(item)\"\n" +
-    "                       on-active-item=\"onActiveItem(item)\" select-only-leafs=\"selectOnlyLeafs\"></tree-item>\n" +
-    "        </ul>\n" +
-    "    </div>\n" +
-    "</div>\n"
+    "    \r" +
+    "\n" +
+    "    <div class=\"multi-select-tree__control\" ng-click=\"onControlClick($event)\">\r" +
+    "\n" +
+    "        <div class=\"multi-select-tree__value-container\">\r" +
+    "\n" +
+    "            <div ng-class=\"{'multi-select-tree__multi-value-container': multiSelect, 'multi-select-tree__single-value-container': !multiSelect}\">\r" +
+    "\n" +
+    "                <span class=\"multi-select-tree__single-value\" ng-if=\"!multiSelect\" ng-show=\"!filterKeyword\">{{selectedItems[0].name}}</span>\r" +
+    "\n" +
+    "                <div ng-if=\"multiSelect\" class=\"multi-select-tree__multi-value-item\" ng-repeat=\"selectedItem in selectedItems\" ng-click=\"deselectItem(selectedItem, $event)\">\r" +
+    "\n" +
+    "                    <span class=\"multi-select-tree__multi-value-item-label\">{{selectedItem.name}}</span>\r" +
+    "\n" +
+    "                    <i class=\"multi-select-tree__multi-value-item-remove\"></i>\r" +
+    "\n" +
+    "                </div>\r" +
+    "\n" +
+    "                <span class=\"multi-select-tree__placeholder\" ng-show=\"!filterKeyword && (!selectedItems || selectedItems.length == 0)\" ng-bind=\"defaultLabel\"></span>\r" +
+    "\n" +
+    "                <div class=\"multi-select-tree__input-container\">\r" +
+    "\n" +
+    "                    <input type=\"text\" class=\"multi-select-tree__input\" ng-model=\"filterKeyword\" ng-blur=\"onInputBlur($event)\" ng-keydown=\"onInputKeydown($event)\">\r" +
+    "\n" +
+    "                </div>\r" +
+    "\n" +
+    "            </div>\r" +
+    "\n" +
+    "        </div>\r" +
+    "\n" +
+    "\r" +
+    "\n" +
+    "        <button class=\"multi-select-tree__clear-button\" ng-show=\"!disabled && selectedItems.length > 0\" ng-click=\"clearSelection($event)\"></button>\r" +
+    "\n" +
+    "\r" +
+    "\n" +
+    "        <button class=\"multi-select-tree__control-arrow-button\" ng-click=\"togglePopup($event);\"></button>\r" +
+    "\n" +
+    "    </div>\r" +
+    "\n" +
+    "    <div class=\"multi-select-tree__popup-container\" ng-show=\"showTree\">\r" +
+    "\n" +
+    "        <div class=\"multi-select-tree__popup\">\r" +
+    "\n" +
+    "            <ul class=\"multi-select-tree__list\">\r" +
+    "\n" +
+    "                <tree-item ng-repeat=\"item in inputModel\" item=\"item\" ng-show=\"!item.isFiltered\"\r" +
+    "\n" +
+    "                    use-callback=\"useCallback\" can-select-item=\"canSelectItem\"\r" +
+    "\n" +
+    "                    multi-select=\"multiSelect\" item-selected=\"itemSelected(item)\"\r" +
+    "\n" +
+    "                    on-active-item=\"onActiveItem(item)\" expand-toggle=\"itemExpandToggle(item)\" select-only-leafs=\"selectOnlyLeafs\"></tree-item>\r" +
+    "\n" +
+    "            </ul>\r" +
+    "\n" +
+    "            <span class=\"multi-select-tree__no-results-text\" ng-show=\"filterKeyword && totalFilteredItems == 0\">{{noResultsText || 'No results found...'}}</span>\r" +
+    "\n" +
+    "        </div>\r" +
+    "\n" +
+    "    </div>\r" +
+    "\n" +
+    "</div>\r" +
+    "\n"
   );
 
 
   $templateCache.put('src/tree-item.tpl.html',
-    "<li>\n" +
-    "    <div class=\"item-container\" ng-class=\"{active: item.isActive, selected: item.selected}\"\n" +
-    "         ng-click=\"clickSelectItem(item, $event)\" ng-mouseover=\"onMouseOver(item, $event)\">\n" +
-    "        <span ng-if=\"showExpand(item)\" class=\"expand\" ng-class=\"{'expand-opened': item.isExpanded}\"\n" +
-    "              ng-click=\"onExpandClicked(item, $event)\"></span>\n" +
+    "<li class=\"multi-select-tree__list-item\">\r" +
     "\n" +
-    "        <div class=\"item-details\"><input class=\"tree-checkbox\" type=\"checkbox\" ng-if=\"showCheckbox()\"\n" +
-    "                                         ng-checked=\"item.selected\"/>{{item.name}}\n" +
-    "        </div>\n" +
-    "    </div>\n" +
-    "    <ul ng-repeat=\"child in item.children\" ng-if=\"item.isExpanded\">\n" +
-    "        <tree-item item=\"child\" item-selected=\"subItemSelected(item)\" use-callback=\"useCallback\"\n" +
-    "                   can-select-item=\"canSelectItem\" multi-select=\"multiSelect\"\n" +
-    "                   on-active-item=\"activeSubItem(item, $event)\"></tree-item>\n" +
-    "    </ul>\n" +
-    "</li>\n"
+    "    <div class=\"multi-select-tree__option\" data-id=\"{{item.id}}\" ng-class=\"{'multi-select-tree__option--active': item.isActive, 'multi-select-tree__option--selected': item.selected, 'multi-select-tree__option--expanded': item.isExpanded, 'multi-select-tree__option--selectable': !selectOnlyLeafs || !item.children || item.children.length == 0}\" ng-mouseover=\"onMouseOver(item, $event)\">\r" +
+    "\n" +
+    "        <button ng-class=\"{'multi-select-tree__option-arrow--visible': showExpand(item)}\" class=\"multi-select-tree__option-arrow\" ng-click=\"onExpandClicked(item, $event)\"></button>\r" +
+    "\n" +
+    "        <div class=\"multi-select-tree__label-container item-details\" ng-click=\"clickSelectItem(item, $event)\" >\r" +
+    "\n" +
+    "            <input class=\"multi-select-tree__checkbox\" type=\"checkbox\" ng-if=\"showCheckbox()\" ng-checked=\"item.selected\"/>\r" +
+    "\n" +
+    "            {{item.name}}\r" +
+    "\n" +
+    "        </div>\r" +
+    "\n" +
+    "    </div>\r" +
+    "\n" +
+    "    <ul class=\"multi-select-tree__list multi-select-tree__list--child\" ng-repeat=\"child in item.children\" ng-if=\"item.isExpanded\">\r" +
+    "\n" +
+    "        <tree-item item=\"child\" parent-item=\"item\" item-selected=\"subItemSelected(item)\" use-callback=\"useCallback\"\r" +
+    "\n" +
+    "                   can-select-item=\"canSelectItem\" multi-select=\"multiSelect\" ng-show=\"!child.isFiltered\"\r" +
+    "\n" +
+    "                   on-active-item=\"activeSubItem(item, $event)\" expand-toggle=\"onSubItemExpandClicked(item)\" select-only-leafs=\"selectOnlyLeafs\"></tree-item>\r" +
+    "\n" +
+    "    </ul>\r" +
+    "\n" +
+    "</li>"
   );
 
 }]);

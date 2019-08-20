@@ -13,7 +13,19 @@
    */
   mainModule.controller('treeItemCtrl', ['$scope', function ($scope) {
 
-    $scope.item.isExpanded = false;
+    if (typeof $scope.item.isExpanded !== 'boolean')
+      $scope.item.isExpanded = false;
+
+    if ($scope.parentItem)
+      $scope.item.parent_id = $scope.parentItem.id;
+    // console.log($scope.$parent, $scope);
+
+    // if ($scope.item.children && $scope.item.children.length > 0) {
+      // $scope.item.children.forEach(function (child) {
+    //     console.log(child);
+        // child.parent = $scope.item;
+      // });
+    // }
 
     /**
      * Shows the expand option.
@@ -33,7 +45,15 @@
      */
     $scope.onExpandClicked = function (item, $event) {
       $event.stopPropagation();
-      item.isExpanded = !item.isExpanded;
+      if ($scope.expandToggle) {
+        $scope.expandToggle({item: item});
+      }
+    };
+
+    $scope.onSubItemExpandClicked = function (item, $event) {
+      if ($scope.expandToggle) {
+        $scope.expandToggle({item: item});
+      }
     };
 
     /**
@@ -103,6 +123,8 @@
       if ($scope.useCallback) {
         return $scope.canSelectItem($scope.item);
       }
+      
+      return true;
     };
 
   }]);
@@ -115,10 +137,13 @@
       return {
         restrict: 'E',
         templateUrl: 'src/tree-item.tpl.html',
+        // replace: true,
         scope: {
           item: '=',
+          parentItem: '=',
           itemSelected: '&',
           onActiveItem: '&',
+          expandToggle: '&',
           multiSelect: '=?',
           selectOnlyLeafs: '=?',
           isActive: '=', // the item is active - means it is highlighted but not selected

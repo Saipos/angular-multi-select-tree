@@ -1,16 +1,14 @@
-<li>
-    <div class="item-container" ng-class="{active: item.isActive, selected: item.selected}"
-         ng-click="clickSelectItem(item, $event)" ng-mouseover="onMouseOver(item, $event)">
-        <span ng-if="showExpand(item)" class="expand" ng-class="{'expand-opened': item.isExpanded}"
-              ng-click="onExpandClicked(item, $event)"></span>
-
-        <div class="item-details"><input class="tree-checkbox" type="checkbox" ng-if="showCheckbox()"
-                                         ng-checked="item.selected"/>{{item.name}}
+<li class="multi-select-tree__list-item">
+    <div class="multi-select-tree__option" data-id="{{item.id}}" ng-class="{'multi-select-tree__option--active': item.isActive, 'multi-select-tree__option--selected': item.selected, 'multi-select-tree__option--expanded': item.isExpanded, 'multi-select-tree__option--selectable': !selectOnlyLeafs || !item.children || item.children.length == 0}" ng-mouseover="onMouseOver(item, $event)">
+        <button ng-class="{'multi-select-tree__option-arrow--visible': showExpand(item)}" class="multi-select-tree__option-arrow" ng-click="onExpandClicked(item, $event)"></button>
+        <div class="multi-select-tree__label-container item-details" ng-click="clickSelectItem(item, $event)" >
+            <input class="multi-select-tree__checkbox" type="checkbox" ng-if="showCheckbox()" ng-checked="item.selected"/>
+            {{item.name}}
         </div>
     </div>
-    <ul ng-repeat="child in item.children" ng-if="item.isExpanded">
-        <tree-item item="child" item-selected="subItemSelected(item)" use-callback="useCallback"
-                   can-select-item="canSelectItem" multi-select="multiSelect"
-                   on-active-item="activeSubItem(item, $event)"></tree-item>
+    <ul class="multi-select-tree__list multi-select-tree__list--child" ng-repeat="child in item.children" ng-if="item.isExpanded">
+        <tree-item item="child" parent-item="item" item-selected="subItemSelected(item)" use-callback="useCallback"
+                   can-select-item="canSelectItem" multi-select="multiSelect" ng-show="!child.isFiltered"
+                   on-active-item="activeSubItem(item, $event)" expand-toggle="onSubItemExpandClicked(item)" select-only-leafs="selectOnlyLeafs"></tree-item>
     </ul>
 </li>
