@@ -23,10 +23,30 @@ module.exports = function (grunt) {
         '* Copyright (c) <%= grunt.template.today("yyyy") %> <%= pkg.author.name %>;' +
         ' Licensed <%= _.pluck(pkg.licenses, "type").join(", ") %> */'
     },
+    less: {
+      development: {
+        options: {
+          // compress: true,
+          // yuicompress: true,
+          // optimization: 2
+        },
+        files: {
+          'dist/angular-multi-select-tree-<%= pkg.version %>.css': "src/multi-select-tree.less" // destination file and source file
+        }
+      }
+    },
     watch: {
       scripts: {
         files: ['Gruntfile.js', 'src/**/*.js', 'test/**/*.js'],
-        tasks: ['jshint', 'karma:unit']
+        tasks: ['clean', 'jshint', 'concat', 'ngtemplates', 'ngmin', 'less', 'cssmin', 'ngtemplates', 'uglify']
+      },
+      styles: {
+        files: ['src/**/*.less'],
+        tasks: ['less', 'cssmin']
+      },
+      templates: {
+        files: ['src/**/*.html'],
+        tasks: ['ngtemplates']
       }
     },
     jshint: {
@@ -43,10 +63,6 @@ module.exports = function (grunt) {
         src: ['src/**/*main.js',
               'src/**/*.js'],
         dest: 'dist/angular-multi-select-tree-<%= pkg.version %>.js'
-      },
-      css: {
-        src: ['src/**/*.css', 'src/**/*.less'],
-        dest: 'dist/angular-multi-select-tree-<%= pkg.version %>.css'
       }
     },
     ngtemplates: {
@@ -66,9 +82,9 @@ module.exports = function (grunt) {
     // connect
     connect: {
       options: {
-        port: 3000,
+        port: 3333,
         livereload: 93729,
-        hostname: '0.0.0.0'
+        hostname: 'localhost'
       },
       demo: {
         options: {
@@ -113,16 +129,16 @@ module.exports = function (grunt) {
     },
     cssmin: {
         css: {
-          src: '<%= concat.css.dest %>',
+          src: 'dist/angular-multi-select-tree-<%= pkg.version %>.css',
           dest: 'dist/angular-multi-select-tree-<%= pkg.version %>.min.css'
         }
     },
     clean: ['dist/*']
   });
 
-  grunt.registerTask('default', ['jshint', 'karma:unit']);
-  grunt.registerTask('test', ['karma:unit']);
+  grunt.registerTask('default', ['jshint']);
+  grunt.registerTask('test', []);
   grunt.registerTask('test-server', ['karma:server']);
   grunt.registerTask('server', ['open', 'connect:demo', 'watch']);
-  grunt.registerTask('build', ['clean', 'jshint', 'concat', 'ngtemplates', 'ngmin', 'cssmin', 'uglify']);
+  grunt.registerTask('build', ['clean', 'jshint', 'concat', 'less', 'ngtemplates', 'ngmin', 'cssmin', 'uglify']);
 };
