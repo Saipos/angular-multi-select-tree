@@ -1,0 +1,17 @@
+<div class="multi-select-tree__control" ng-click="onClick($event)">
+    <div class="multi-select-tree__value-container">
+        <div ng-class="{'multi-select-tree__multi-value-container': instance.multiSelect, 'multi-select-tree__single-value-container': !instance.multiSelect}">
+            <single-value ng-if="!instance.multiSelect" instance="instance" item="instance.selectedItems[0]"></single-value>
+            <multi-value-item ng-if="instance.multiSelect" ng-repeat="selectedItem in instance.selectedItems" item="selectedItem" instance="instance"></multi-value-item>
+
+            <span class="multi-select-tree__placeholder" ng-show="!instance.filterKeyword && (!instance.selectedItems || instance.selectedItems.length == 0)" ng-bind="instance.defaultLabel"></span>
+
+            <tree-filter-input instance="instance"></tree-filter-input>
+            
+        </div>
+    </div>
+
+    <button class="multi-select-tree__clear-button" ng-show="!instance.disabled && instance.selectedItems.length > 0" ng-click="instance.clearSelection($event)"></button>
+
+    <button class="multi-select-tree__control-arrow-button" ng-click="instance.togglePopup($event);"></button>
+</div>
