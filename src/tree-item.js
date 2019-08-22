@@ -18,14 +18,6 @@
 
     if ($scope.parentItem)
       $scope.item.parent_id = $scope.parentItem.id;
-    // console.log($scope.$parent, $scope);
-
-    // if ($scope.item.children && $scope.item.children.length > 0) {
-      // $scope.item.children.forEach(function (child) {
-    //     console.log(child);
-        // child.parent = $scope.item;
-      // });
-    // }
 
     /**
      * Shows the expand option.

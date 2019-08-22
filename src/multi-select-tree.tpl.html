@@ -1,33 +1,14 @@
-<div class="multi-select-tree" ng-class="{'multi-select-tree--input-focused': isInputFocused, 'multi-select-tree--popup-opened': showTree, 'multi-select-tree--multiple': multiSelect, 'multi-select-tree--single': !multiSelect, 'multi-select-tree--has-selected-items': selectedItems && selectedItems.length > 0, 'multi-select-tree--disabled': disabled}">
-    
-    <div class="multi-select-tree__control" ng-click="onControlClick($event)">
-        <div class="multi-select-tree__value-container">
-            <div ng-class="{'multi-select-tree__multi-value-container': multiSelect, 'multi-select-tree__single-value-container': !multiSelect}">
-                <span class="multi-select-tree__single-value" ng-if="!multiSelect" ng-show="!filterKeyword">{{selectedItems[0].name}}</span>
-                <div ng-if="multiSelect" class="multi-select-tree__multi-value-item" ng-repeat="selectedItem in selectedItems" ng-click="deselectItem(selectedItem, $event)">
-                    <span class="multi-select-tree__multi-value-item-label">{{selectedItem.name}}</span>
-                    <i class="multi-select-tree__multi-value-item-remove"></i>
-                </div>
-                <span class="multi-select-tree__placeholder" ng-show="!filterKeyword && (!selectedItems || selectedItems.length == 0)" ng-bind="defaultLabel"></span>
-                <div class="multi-select-tree__input-container">
-                    <input type="text" class="multi-select-tree__input" ng-model="filterKeyword" ng-blur="onInputBlur($event)" ng-keydown="onInputKeydown($event)">
-                </div>
-            </div>
-        </div>
-
-        <button class="multi-select-tree__clear-button" ng-show="!disabled && selectedItems.length > 0" ng-click="clearSelection($event)"></button>
-
-        <button class="multi-select-tree__control-arrow-button" ng-click="togglePopup($event);"></button>
-    </div>
-    <div class="multi-select-tree__popup-container" ng-show="showTree">
-        <div class="multi-select-tree__popup">
-            <ul class="multi-select-tree__list">
-                <tree-item ng-repeat="item in inputModel" item="item" ng-show="!item.isFiltered"
-                    use-callback="useCallback" can-select-item="canSelectItem"
-                    multi-select="multiSelect" item-selected="itemSelected(item)"
-                    on-active-item="onActiveItem(item)" expand-toggle="itemExpandToggle(item)" select-only-leafs="selectOnlyLeafs"></tree-item>
-            </ul>
-            <span class="multi-select-tree__no-results-text" ng-show="filterKeyword && totalFilteredItems == 0">{{noResultsText || 'No results found...'}}</span>
-        </div>
-    </div>
+<div class="multi-select-tree" 
+    ng-class="{
+        'multi-select-tree--input-focused': isInputFocused, 
+        'multi-select-tree--popup-opened': showTree, 
+        'multi-select-tree--multiple': multiSelect, 
+        'multi-select-tree--single': !multiSelect, 
+        'multi-select-tree--has-selected-items': selectedItems && selectedItems.length > 0, 
+        'multi-select-tree--disabled': disabled,
+        'multi-select-tree--open-above': popupPlacement == 'above',
+        'multi-select-tree--open-below': popupPlacement == 'below'
+    }">
+    <tree-control instance="this"></tree-control>
+    <tree-popup instance="this"></tree-popup>
 </div>

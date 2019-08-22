@@ -40,6 +40,8 @@ app.controller('demoAppCtrl', function ($scope) {
 
   $scope.data = angular.copy(data1);
 
+  $scope.data2 = angular.copy(data1);
+
   $scope.selectOnly1Or2 = function(item, selectedItems) {
     if (selectedItems  !== undefined && selectedItems.length >= 20) {
       return false;

@@ -11,36 +11,13 @@
    */
   mainModule.controller('multiSelectTreeCtrl', ['$scope', '$document', '$element', function ($scope, $document, $element) {
 
-    var activeItem;
-    var KEY_CODES = {
-      BACKSPACE: 8,
-      TAB: 9,
-      ENTER: 13,
-      ESCAPE: 27,
-      END: 35,
-      HOME: 36,
-      ARROW_LEFT: 37,
-      ARROW_UP: 38,
-      ARROW_RIGHT: 39,
-      ARROW_DOWN: 40,
-      DELETE: 46
-    };
-
-    var keysThatRequireMenuBeingOpen = [
-      KEY_CODES.ENTER,
-      KEY_CODES.END,
-      KEY_CODES.HOME,
-      KEY_CODES.ARROW_LEFT,
-      KEY_CODES.ARROW_UP,
-      KEY_CODES.ARROW_RIGHT,
-      KEY_CODES.ARROW_DOWN
-    ];
-
     $scope.showTree = false;
     $scope.selectedItems = [];
     $scope.visibleItems = [];
     $scope.multiSelect = $scope.multiSelect || false;
     $scope.filterKeyword = '';
+    $scope.activeItem = null;
+    $scope.popupPlacement = 'below';
 
     /**
      * Clicking on document will hide the tree.
@@ -48,17 +25,9 @@
     function docClickHide($event) {
       var valueContainerClicked = $scope.getValueContainer().contains($event.target);
       if (!valueContainerClicked) {
-        closePopup();
+        $scope.closePopup();
         $scope.$apply();
       }
-    }
-
-    function openPopup() {
-      if ($scope.disabled) return;
-      $scope.showTree = true;
-      if (!activeItem)
-        activeFirstItem();
-      $document.on('click', docClickHide);
     }
     
     function getAllVisibleNodes(node, childNodes) {
@@ -72,67 +41,6 @@
           getAllVisibleNodes(children[i], childNodes);
       }
       return childNodes;
-    }
-
-    function getItemIndex (item_id) {
-      for (var index = 0; index < $scope.visibleItems.length; index++) {
-        if (item_id === $scope.visibleItems[index].id)
-          return index;
-      }
-      return -1;
-    }
-
-    function getItemAt(item_index) {
-      return $scope.visibleItems[item_index];
-    }
-
-    function getActiveItemIndex () {
-      return activeItem ? getItemIndex(activeItem.id) : -1;
-    }
-
-    function activeFirstItem() {
-      if ($scope.visibleItems.length > 0)
-        return $scope.onActiveItem(getItemAt(0));
-      return false;
-    }
-
-    function activeLastItem() {
-      var visibleItemsLength = $scope.visibleItems.length;
-      if (visibleItemsLength > 0)
-        return $scope.onActiveItem(getItemAt(visibleItemsLength-1));
-      return false;
-    }
-
-    function activeNextItem() {
-      var next = getActiveItemIndex() + 1;
-      if (next === $scope.visibleItems.length) 
-        return activeFirstItem();
-      return $scope.onActiveItem(getItemAt(next));
-    }
-
-    function activePreviousItem() {
-      var previous = getActiveItemIndex() - 1;
-      if (previous === -1) 
-        return activeLastItem();
-      return $scope.onActiveItem(getItemAt(previous));
-    }
-
-    function closePopup() {
-      $scope.showTree = false;
-      $scope.filterKeyword = '';
-      if (activeItem) {
-        activeItem.isActive = false;
-        activeItem = undefined;
-      }
-      $document.off('click', docClickHide);
-    }
-
-    function removeLastSelected($event) {
-      var length = !$scope.selectedItems ? 0 : $scope.selectedItems.length;
-      var last = length ? $scope.selectedItems[length - 1] : undefined;
-      if (last) {
-        $scope.deselectItem(last, $event);
-      }
     }
 
     /**
@@ -152,6 +60,7 @@
         }
       }
     }
+    
     /**
      * Checks of the item is already selected.
      *
@@ -189,20 +98,89 @@
       }
     }
 
+    $scope.openPopup = function () {
+      if ($scope.disabled) return;
+      $scope.showTree = true;
+      if (!$scope.activeItem)
+        $scope.activeFirstItem();
+      $document.on('click', docClickHide);
+    };
+
+    $scope.closePopup = function() {
+      $scope.showTree = false;
+      $scope.filterKeyword = '';
+      if ($scope.activeItem) {
+        $scope.activeItem.isActive = false;
+        $scope.activeItem = undefined;
+      }
+      $document.off('click', docClickHide);
+    };
+
+    $scope.getItemIndex = function (item_id) {
+      for (var index = 0; index < $scope.visibleItems.length; index++) {
+        if (item_id === $scope.visibleItems[index].id)
+          return index;
+      }
+      return -1;
+    };
+
+    $scope.getActiveItemIndex = function () {
+      return $scope.activeItem ? $scope.getItemIndex($scope.activeItem.id) : -1;
+    };
+
+    $scope.getItemAt = function (item_index) {
+      return $scope.visibleItems[item_index];
+    };
+
+    $scope.activeFirstItem = function () {
+      if ($scope.visibleItems.length > 0)
+        return $scope.onActiveItem($scope.getItemAt(0));
+      return false;
+    };
+
+    $scope.activeLastItem = function () {
+      var visibleItemsLength = $scope.visibleItems.length;
+      if (visibleItemsLength > 0)
+        return $scope.onActiveItem($scope.getItemAt(visibleItemsLength-1));
+      return false;
+    };
+
+    $scope.activeNextItem = function () {
+      var next = $scope.getActiveItemIndex() + 1;
+      if (next === $scope.visibleItems.length) 
+        return $scope.activeFirstItem();
+      return $scope.onActiveItem($scope.getItemAt(next));
+    };
+
+    $scope.activePreviousItem = function () {
+      var previous = $scope.getActiveItemIndex() - 1;
+      if (previous === -1) 
+        return $scope.activeLastItem();
+      return $scope.onActiveItem($scope.getItemAt(previous));
+    };
+
+    $scope.removeLastSelected = function () {
+      var length = !$scope.selectedItems ? 0 : $scope.selectedItems.length;
+      var last = length ? $scope.selectedItems[length - 1] : undefined;
+      if (last) {
+        $scope.deselectItem(last);
+      }
+    };
+
     /**
      * Sets the active item.
      *
      * @param item the item element.
      */
     $scope.onActiveItem = function (item) {
-      if (activeItem !== item) {
-        if (activeItem) {
-          activeItem.isActive = false;
+      if ($scope.activeItem !== item) {
+        if ($scope.activeItem) {
+          $scope.activeItem.isActive = false;
         }
-        activeItem = item;
-        activeItem.isActive = true;
+        $scope.activeItem = item;
+        $scope.activeItem.isActive = true;
       }
-      scrollPopupToItem(activeItem);
+      scrollPopupToItem($scope.activeItem);
     };
 
     $scope.itemExpandToggle = function (item) {
@@ -234,8 +212,8 @@
      * @param item the item element
      * @param $event
      */
-    $scope.deselectItem = function (item, $event) {
-      $event.stopPropagation();
+    $scope.deselectItem = function (item) {
+      // $event.stopPropagation();
       if ($scope.disabled) return;
       $scope.selectedItems.splice($scope.selectedItems.indexOf(item), 1);
       item.selected = false;
@@ -260,86 +238,16 @@
       return $element[0].querySelector('.multi-select-tree__popup');
     };
 
+    $scope.getControl = function () {
+      return $element[0].querySelector('.multi-select-tree__control');
+    };
+
     $scope.getValueContainer = function () {
       return $element[0].querySelector('.multi-select-tree__value-container');
     };
 
     $scope.onInputBlur = function($event) {
       $scope.isInputFocused = false;
-    };
-
-    $scope.onInputKeydown = function($event) {
-      var key = 'which' in $event ? $event.which : $event.keyCode;
-
-      if ($event.ctrlKey || $event.shiftKey || $event.altKey || $event.metaKey)
-        return;
-
-      if (!$scope.showTree && keysThatRequireMenuBeingOpen.indexOf(key) !== -1) {
-        $event.preventDefault();
-        openPopup();
-        return;
-      }
-
-      switch (key) {
-      case KEY_CODES.TAB:
-        closePopup();
-        break;
-      case KEY_CODES.ESCAPE:
-        if ($scope.filterKeyword && $scope.filterKeyword.length > 0) {
-          $scope.clearFilter($event);
-        } else if ($scope.showTree) {
-          closePopup();
-        }
-        break;
-      case KEY_CODES.BACKSPACE:
-        if ($scope.filterKeyword.length === 0) {
-          removeLastSelected($event);
-        }
-        break;
-      case KEY_CODES.ARROW_LEFT:
-        $event.preventDefault();
-        if (activeItem.isExpanded) {
-          $scope.itemExpandToggle(activeItem);
-        } else if (activeItem.parent_id) {
-          var parent_item = getItemAt(getItemIndex(activeItem.parent_id));
-          $scope.itemExpandToggle(parent_item);
-          $scope.onActiveItem(parent_item);
-        }
-        break;
-      case KEY_CODES.ARROW_UP:
-        $event.preventDefault();
-        activePreviousItem();
-        break;
-      case KEY_CODES.ARROW_RIGHT:
-        $event.preventDefault();
-        if (!activeItem.isExpanded && activeItem.children && activeItem.children.length > 0)
-          $scope.itemExpandToggle(activeItem);
-        break;
-      case KEY_CODES.ARROW_DOWN:
-        $event.preventDefault();
-        activeNextItem();        
-        break;
-      case KEY_CODES.ENTER:
-        $event.preventDefault();
-        if (activeItem) {
-          $scope.itemSelected(activeItem);
-        }
-        break;
-      case KEY_CODES.HOME:
-        $event.preventDefault();
-        activeFirstItem();
-        break;
-      case KEY_CODES.END:
-        $event.preventDefault();
-        activeLastItem();
-        break;
-      default:
-        if (!$scope.showTree) {
-          // $event.preventDefault();
-          openPopup();
-        }
-      }
-
     };
 
     $scope.getInput = function () {
@@ -351,23 +259,13 @@
       this.getInput().focus();
     };
 
-    $scope.onControlClick = function ($event) {
-      $event.preventDefault();
-      $event.stopPropagation();
-      if ($scope.disabled) return;
-      var valueContainerClicked = $scope.getValueContainer().contains($event.target);
-      if (valueContainerClicked && !$scope.showTree)
-        openPopup();
-
-      this.focusInput();
-    };
-
     $scope.togglePopup = function($event) {
       $event.preventDefault();
       $event.stopPropagation();
       if ($scope.disabled) return;
-      if ($scope.showTree) closePopup();
-      else openPopup();
+      if ($scope.showTree) $scope.closePopup();
+      else $scope.openPopup();
+      this.focusInput();
     };
 
     /**
@@ -384,8 +282,7 @@
      *
      * @param $event the click event
      */
-    $scope.clearFilter = function ($event) {
-      $event.stopPropagation();
+    $scope.clearFilter = function () {
       $scope.filterKeyword = '';
     };
 
@@ -411,7 +308,7 @@
       }
 
       if (!$scope.multiSelect) {
-        closePopup();
+        $scope.closePopup();
         for (var i = 0; i < $scope.selectedItems.length; i++) {
           $scope.selectedItems[i].selected = false;
         }
@@ -434,6 +331,18 @@
 
     $scope.resetVisibleNodes = function () {
       $scope.visibleItems = getAllVisibleNodes({children: $scope.inputModel}, []);
+    };
+
+    function setPopupPlacement (placement) {
+      $scope.popupPlacement = placement;
+    }
+
+    $scope.setPopupAbove = function () {
+      setPopupPlacement('above');
+    };
+    
+    $scope.setPopupBelow = function () {
+      setPopupPlacement('below');
     };
 
   }]);
@@ -487,7 +396,7 @@
               childNodes[i].isFiltered = keyword.length > 0;
               if (!isChildrenFiltered(childNodes[i], keyword) || childNodes[i].name.toLowerCase().indexOf(keyword.toLowerCase()) !== -1) {
                 childNodes[i].isFiltered = false;
-                childNodes[i].isExpanded = true;
+                childNodes[i].isExpanded = keyword.length > 0;
                 filteredChildrenLength++;
               }
             }

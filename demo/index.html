@@ -26,10 +26,16 @@
             <div class="col-md-6">
                 <h2>Multi-select</h2>
                 <multi-select-tree data-input-model="data" multi-select="true" select-only-leafs="false"
-                                   data-output-model="selectedItem2" data-default-label="Selecione" no-results-text="Nenhuma opção disponível para o filtro."></multi-select-tree>
-                <br/>Selected items: {{selectedItem2}}
+                                   data-output-model="selectedItem" data-default-label="Selecione" no-results-text="Nenhuma opção disponível para o filtro."></multi-select-tree>
+                <br/>Selected items: {{selectedItem}}
             </div>
             
+            <div class="col-md-6">
+                <h2>Multi-select 2</h2>
+                <multi-select-tree data-input-model="data2" multi-select="false" select-only-leafs="false"
+                                    data-output-model="selectedItem2" data-default-label="Selecione" no-results-text="Nenhuma opção disponível para o filtro."></multi-select-tree>
+                <br/>Selected items: {{selectedItem2}}
+            </div>
         </div>
     </div>
 </div>
