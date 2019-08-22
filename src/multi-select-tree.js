@@ -31,14 +31,16 @@
     }
     
     function getAllVisibleNodes(node, childNodes) {
-      var children = node.children.filter(function (child) {
-        return !child.isFiltered;
-      });
-      for (var i = 0; i < children.length; i++) {
-        childNodes.push(children[i]);
-        // add the childNodes from the children if available
-        if (children[i].isExpanded)
-          getAllVisibleNodes(children[i], childNodes);
+      if (node.children) {
+        var children = node.children.filter(function (child) {
+          return !child.isFiltered;
+        });
+        for (var i = 0; i < children.length; i++) {
+          childNodes.push(children[i]);
+          // add the childNodes from the children if available
+          if (children[i].isExpanded)
+            getAllVisibleNodes(children[i], childNodes);
+        }
       }
       return childNodes;
     }
