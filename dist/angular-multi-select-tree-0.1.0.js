@@ -363,7 +363,8 @@
         selectOnlyLeafs: '=?',
         callback: '&',
         defaultLabel: '@',
-        noResultsText: '@'
+        noResultsText: '@',
+        ngDisabled: '=?'
       },
       link: function (scope, element, attrs) {
         if (attrs.callback) {
@@ -373,9 +374,9 @@
           scope.tabindex = attrs.tabindex;
           element[0].removeAttribute('tabindex');
         }
-        if (typeof attrs.disabled !== 'undefined') {
-          scope.disabled = true;
-        }
+        scope.$watch('ngDisabled', function () {
+          scope.disabled = scope.ngDisabled;
+        });
         // watch for changes in input model as a whole
         // this on updates the multi-select when a user load a whole new input-model.
         scope.$watch('inputModel', function (newVal) {

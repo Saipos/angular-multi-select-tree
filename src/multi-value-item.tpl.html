@@ -1,4 +1,4 @@
 <div class="multi-select-tree__multi-value-item" ng-click="onClick($event)">
     <span class="multi-select-tree__multi-value-item-label">{{item.name}}</span>
-    <i class="multi-select-tree__multi-value-item-remove"></i>
+    <i ng-show="!instance.disabled" class="multi-select-tree__multi-value-item-remove"></i>
 </div>
