@@ -89,7 +89,7 @@ angular.module('multi-select-tree').run(['$templateCache', function($templateCac
   $templateCache.put('src/tree-filter-input.tpl.html',
     "<div class=\"multi-select-tree__input-container\">\r" +
     "\n" +
-    "    <input type=\"text\" class=\"multi-select-tree__input\" ng-model=\"instance.filterKeyword\" ng-blur=\"onBlur($event)\" ng-keydown=\"onKeydown($event)\">\r" +
+    "    <input type=\"text\" ng-attr-tabindex=\"{{instance.tabindex || undefined}}\" class=\"multi-select-tree__input\" ng-model=\"instance.filterKeyword\" ng-blur=\"onBlur($event)\" ng-keydown=\"onKeydown($event)\">\r" +
     "\n" +
     "</div>"
   );
