@@ -76,11 +76,11 @@ angular.module('multi-select-tree').run(['$templateCache', function($templateCac
     "\n" +
     "\r" +
     "\n" +
-    "    <button class=\"multi-select-tree__clear-button\" ng-show=\"!instance.disabled && instance.selectedItems.length > 0\" ng-click=\"instance.clearSelection($event)\"></button>\r" +
+    "    <button class=\"multi-select-tree__clear-button\" ng-show=\"!instance.disabled && instance.selectedItems.length > 0\" tabindex=\"-1\" ng-click=\"instance.clearSelection($event)\"></button>\r" +
     "\n" +
     "\r" +
     "\n" +
-    "    <button class=\"multi-select-tree__control-arrow-button\" ng-click=\"instance.togglePopup($event);\"></button>\r" +
+    "    <button class=\"multi-select-tree__control-arrow-button\" ng-click=\"instance.togglePopup($event);\" tabindex=\"-1\"></button>\r" +
     "\n" +
     "</div>"
   );
@@ -89,7 +89,7 @@ angular.module('multi-select-tree').run(['$templateCache', function($templateCac
   $templateCache.put('src/tree-filter-input.tpl.html',
     "<div class=\"multi-select-tree__input-container\">\r" +
     "\n" +
-    "    <input type=\"text\" ng-attr-tabindex=\"{{instance.tabindex || undefined}}\" class=\"multi-select-tree__input\" ng-model=\"instance.filterKeyword\" ng-blur=\"onBlur($event)\" ng-keydown=\"onKeydown($event)\">\r" +
+    "    <input type=\"text\" class=\"multi-select-tree__input\" ng-model=\"instance.filterKeyword\" ng-blur=\"onBlur($event)\" ng-keydown=\"onKeydown($event)\">\r" +
     "\n" +
     "</div>"
   );

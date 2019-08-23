@@ -369,10 +369,6 @@
         if (attrs.callback) {
           scope.useCallback = true;
         }
-        if (attrs.tabindex) {
-          scope.tabindex = attrs.tabindex;
-          element[0].removeAttribute('tabindex');
-        }
         if (typeof attrs.disabled !== 'undefined') {
           scope.disabled = true;
         }
@@ -421,6 +417,13 @@
             });
           }
           scope.resetVisibleNodes();
+          function focusEventListener() {
+            scope.focusInput();
+          }
+          element[0].addEventListener('focus', focusEventListener);
+          scope.$on('$destroy', function () {
+            element[0].removeEventListener('focus', focusEventListener);
+          });
         });
       },
       controller: 'multiSelectTreeCtrl'
