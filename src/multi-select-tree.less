@@ -123,6 +123,7 @@
     -ms-user-select: none;
     user-select: none;
     pointer-events: none;
+    max-width: 100%;
   }
 
   &__placeholder {
@@ -137,16 +138,22 @@
     &-item {
       display: inline-block;
       background: #e3f2fd;
-      padding: 3px 5px;
+      padding: 3px 35px 3px 5px;
       margin: 5px 5px 0 0;
       cursor: pointer;
       border-radius: 2px;
       color: #039be5;
+      position: relative;
       &-label {
         &::after {
           content: "";
           border-right: 1px solid #fff;
-          margin: 0 5px 0 10px;
+          margin: 0 5px;
+          position: absolute;
+          right: 20px;
+          height: 50%;
+          top: 50%;
+          transform: translateY(-50%);
         }
       }
       &-remove {
@@ -156,6 +163,10 @@
         width: 10px;
         height: 12px;
         margin-right: 0;
+        right: 8px;
+        top: 50%;
+        transform: translateY(-50%);
+        position: absolute;
       }
       &:hover {
         .multi-select-tree__multi-value-item-remove {
@@ -351,6 +362,7 @@
       background: #fff;
       border-color: #e5e5e5;
       color: #555;
+      cursor: default;
     }
   }
 
