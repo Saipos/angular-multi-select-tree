@@ -16,6 +16,9 @@
     if (typeof $scope.item.isExpanded !== 'boolean')
       $scope.item.isExpanded = false;
 
+    if (!$scope.item.id)
+      $scope.item.id = $scope.generateItemId();
+
     if ($scope.parentItem)
       $scope.item.parent_id = $scope.parentItem.id;
 
@@ -136,6 +139,7 @@
           itemSelected: '&',
           onActiveItem: '&',
           expandToggle: '&',
+          generateItemId: '&',
           multiSelect: '=?',
           selectOnlyLeafs: '=?',
           isActive: '=', // the item is active - means it is highlighted but not selected

@@ -40,6 +40,7 @@
     '$document',
     '$element',
     function ($scope, $document, $element) {
+      var _currentSequentialId = 0;
       $scope.showTree = false;
       $scope.selectedItems = [];
       $scope.visibleItems = [];
@@ -343,6 +344,9 @@
       $scope.setPopupBelow = function () {
         setPopupPlacement('below');
       };
+      $scope.generateItemId = function () {
+        return _currentSequentialId++;
+      };
     }
   ]);
   /**
@@ -620,6 +624,8 @@
     function ($scope) {
       if (typeof $scope.item.isExpanded !== 'boolean')
         $scope.item.isExpanded = false;
+      if (!$scope.item.id)
+        $scope.item.id = $scope.generateItemId();
       if ($scope.parentItem)
         $scope.item.parent_id = $scope.parentItem.id;
       /**
@@ -728,6 +734,7 @@
           itemSelected: '&',
           onActiveItem: '&',
           expandToggle: '&',
+          generateItemId: '&',
           multiSelect: '=?',
           selectOnlyLeafs: '=?',
           isActive: '=',

@@ -11,6 +11,7 @@
    */
   mainModule.controller('multiSelectTreeCtrl', ['$scope', '$document', '$element', function ($scope, $document, $element) {
 
+    var _currentSequentialId = 0;
     $scope.showTree = false;
     $scope.selectedItems = [];
     $scope.visibleItems = [];
@@ -345,6 +346,10 @@
     
     $scope.setPopupBelow = function () {
       setPopupPlacement('below');
+    };
+
+    $scope.generateItemId = function () {
+      return _currentSequentialId++;
     };
 
   }]);

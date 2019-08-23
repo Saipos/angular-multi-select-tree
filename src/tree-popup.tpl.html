@@ -11,7 +11,8 @@
                 item-selected="instance.itemSelected(item)"
                 on-active-item="instance.onActiveItem(item)" 
                 expand-toggle="instance.itemExpandToggle(item)" 
-                select-only-leafs="instance.selectOnlyLeafs">
+                select-only-leafs="instance.selectOnlyLeafs"
+                generate-item-id="instance.generateItemId()">
             </tree-item>
         </ul>
         <span class="multi-select-tree__no-results-text" ng-show="instance.filterKeyword && instance.totalFilteredItems == 0">{{instance.noResultsText || 'No results found...'}}</span>

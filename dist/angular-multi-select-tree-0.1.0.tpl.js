@@ -153,7 +153,9 @@ angular.module('multi-select-tree').run(['$templateCache', function($templateCac
     "\n" +
     "                expand-toggle=\"instance.itemExpandToggle(item)\" \r" +
     "\n" +
-    "                select-only-leafs=\"instance.selectOnlyLeafs\">\r" +
+    "                select-only-leafs=\"instance.selectOnlyLeafs\"\r" +
+    "\n" +
+    "                generate-item-id=\"instance.generateItemId()\">\r" +
     "\n" +
     "            </tree-item>\r" +
     "\n" +
