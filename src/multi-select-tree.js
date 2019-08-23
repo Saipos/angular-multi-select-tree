@@ -376,6 +376,11 @@
             scope.useCallback = true;
           }
           
+          if (attrs.tabindex) {
+            scope.tabindex = attrs.tabindex;
+            element[0].removeAttribute('tabindex');
+          }
+          
           if (typeof attrs.disabled !== 'undefined') {
             scope.disabled = true;
           }
