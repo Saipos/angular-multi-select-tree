@@ -383,6 +383,7 @@
           if (newVal) {
             scope.refreshSelectedItems();
             scope.refreshOutputModel();
+            scope.resetVisibleNodes();
           }
         });
         /**
@@ -421,7 +422,6 @@
               }
             });
           }
-          scope.resetVisibleNodes();
           function focusEventListener() {
             scope.focusInput();
           }
