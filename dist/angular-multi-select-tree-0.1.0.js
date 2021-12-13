@@ -553,6 +553,9 @@
         }
         switch (key) {
         case KEY_CODES.TAB:
+          if ($scope.instance.activeItem && !$scope.instance.multiSelect) {
+            $scope.instance.itemSelected($scope.instance.activeItem);
+          }
           $scope.instance.closePopup();
           break;
         case KEY_CODES.ESCAPE:
